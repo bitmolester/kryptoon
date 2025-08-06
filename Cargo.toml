@@ -1,6 +1,6 @@
 [package]
 name = "kryptoon"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2024"
 
 authors = ["Anonymous <224859321+bitmolester@users.noreply.github.com>"]
