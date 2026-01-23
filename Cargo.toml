@@ -1,6 +1,6 @@
 [package]
 name = "kryptoon"
-version = "2026.1.11"
+version = "2026.1.23"
 edition = "2024"
 
 authors = ["Anonymous <me@pishvaveisi.com>"]
@@ -37,7 +37,7 @@ version = "0.9.2"
 version = "1.8.3"
 
 [dependencies.bcrypt]
-version = "0.17.1"
+version = "0.18.0"
 
 [dependencies.ripemd]
 version = "0.1.3"
