@@ -4,7 +4,7 @@ A blazing-fast cryptography library for Python, built on Rust.
 
 Supports an extensive set of **post-quantum** digital signature algorithms (DSA) and key encapsulation mechanisms (KEM).
 
-#### 🚀 Classic cryptography algorithms are also supported!
+> ⚠️ **Disclaimer:** This library is intended **for educational and research purposes only** and is **not recommended for production use**.
 
 ## ⚡ Features
 - ✅ Dozens of NIST PQC candidates 

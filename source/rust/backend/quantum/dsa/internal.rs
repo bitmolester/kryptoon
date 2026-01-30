@@ -2,6 +2,8 @@
 use oqs::sig::{Algorithm, Sig};
 use pyo3::exceptions::*;
 use pyo3::prelude::*;
+use oqs_sys::rand::*;
+use std::sync::Mutex;
 
 // MAIN
 fn dsaalgorithm(name: &str) -> Result<Sig, PyErr> {
@@ -74,6 +76,21 @@ fn dsaalgorithm(name: &str) -> Result<Sig, PyErr> {
     Ok(result)
 }
 
+static SEED_STATE: Mutex<Option<Vec<u8>>> = Mutex::new(None);
+static mut SEED_OFFSET: usize = 0;
+
+unsafe extern "C" fn custom_randombytes(random_array: *mut u8, bytes_to_read: usize) {
+    let seed_guard = SEED_STATE.lock().unwrap();
+    if let Some(seed_data) = seed_guard.as_ref() {
+        unsafe {
+            for i in 0..bytes_to_read {
+                *random_array.add(i) = seed_data[(SEED_OFFSET + i) % seed_data.len()];
+            }
+            SEED_OFFSET = (SEED_OFFSET + bytes_to_read) % seed_data.len();
+        }
+    }
+}
+
 #[pyfunction]
 pub fn dsakeygen(name: &str) -> PyResult<(Vec<u8>, Vec<u8>)> {
     let algorithm = dsaalgorithm(name)?;
@@ -82,6 +99,47 @@ pub fn dsakeygen(name: &str) -> PyResult<(Vec<u8>, Vec<u8>)> {
         .map_err(|problem| PyRuntimeError::new_err(format!("Algorithm failure: {}", problem)))?;
     //
     Ok((secretkey.into_vec(), publickey.into_vec()))
+}
+
+#[pyfunction]
+pub fn dsaseedkeygen(name: &str, seed: &[u8]) -> PyResult<(Vec<u8>, Vec<u8>)> {
+    let expanded_seed = if seed.len() < 1024 {
+        let mut expanded = Vec::with_capacity(1024);
+        while expanded.len() < 1024 {
+            expanded.extend_from_slice(seed);
+        }
+        expanded.truncate(1024);
+        expanded
+    } else {
+        seed.to_vec()
+    };
+    {
+        let mut seed_guard = SEED_STATE.lock()
+            .map_err(|_| PyRuntimeError::new_err("Failed to lock seed state"))?;
+        *seed_guard = Some(expanded_seed);
+        unsafe { SEED_OFFSET = 0; }
+    }
+    unsafe {
+        OQS_randombytes_custom_algorithm(Some(custom_randombytes));
+    }
+    let result = (|| -> PyResult<(Vec<u8>, Vec<u8>)> {
+        let algorithm = dsaalgorithm(name)?;
+        let (publickey, secretkey) = algorithm
+            .keypair()
+            .map_err(|problem| PyRuntimeError::new_err(format!("Algorithm failure: {}", problem)))?;
+        Ok((secretkey.into_vec(), publickey.into_vec()))
+    })();
+    unsafe {
+        OQS_randombytes_switch_algorithm(b"system\0".as_ptr() as *const i8);
+    }
+    {
+        let mut seed_guard = SEED_STATE.lock()
+            .map_err(|_| PyRuntimeError::new_err("Failed to lock seed state"))?;
+        *seed_guard = None;
+        unsafe { SEED_OFFSET = 0; }
+    }
+    //
+    result
 }
 
 #[pyfunction]

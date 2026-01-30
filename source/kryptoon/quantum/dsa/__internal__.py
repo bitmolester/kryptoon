@@ -348,6 +348,8 @@ def KeyPair(
     secretkey: bytes, publickey: bytes
 ) -> tuple[SecretKey, PublicKey]: ...
 @_typing.overload
+def KeyPair(name: Algorithm, *, seed: bytes) -> SecretKey: ...
+@_typing.overload
 def KeyPair(name: Algorithm, *, secretkey: bytes) -> SecretKey: ...
 @_typing.overload
 def KeyPair(name: Algorithm, *, publickey: bytes) -> PublicKey: ...
@@ -363,6 +365,8 @@ def KeyPair(
     secretkey: bytes,
     publickey: bytes
 ) -> tuple[CROSSSecretKey, CROSSPublicKey]: ...
+@_typing.overload
+def KeyPair(name: Algorithm.CROSS, *, seed: bytes) -> CROSSSecretKey: ...
 @_typing.overload
 def KeyPair(name: Algorithm.CROSS, *, secretkey: bytes) -> CROSSSecretKey: ...
 @_typing.overload
@@ -380,6 +384,8 @@ def KeyPair(
     publickey: bytes
 ) -> tuple[DILITHIUMSecretKey, DILITHIUMPublicKey]: ...
 @_typing.overload
+def KeyPair(name: Algorithm.DILITHIUM, *, seed: bytes) -> DILITHIUMSecretKey: ...
+@_typing.overload
 def KeyPair(name: Algorithm.DILITHIUM, *, secretkey: bytes) -> DILITHIUMSecretKey: ...
 @_typing.overload
 def KeyPair(name: Algorithm.DILITHIUM, *, publickey: bytes) -> DILITHIUMPublicKey: ...
@@ -395,6 +401,8 @@ def KeyPair(
     secretkey: bytes,
     publickey: bytes
 ) -> tuple[FALCONSecretKey, FALCONPublicKey]: ...
+@_typing.overload
+def KeyPair(name: Algorithm.FALCON, *, seed: bytes) -> FALCONSecretKey: ...
 @_typing.overload
 def KeyPair(name: Algorithm.FALCON, *, secretkey: bytes) -> FALCONSecretKey: ...
 @_typing.overload
@@ -412,6 +420,8 @@ def KeyPair(
     publickey: bytes
 ) -> tuple[MAYOSecretKey, MAYOPublicKey]: ...
 @_typing.overload
+def KeyPair(name: Algorithm.MAYO, *, seed: bytes) -> MAYOSecretKey: ...
+@_typing.overload
 def KeyPair(name: Algorithm.MAYO, *, secretkey: bytes) -> MAYOSecretKey: ...
 @_typing.overload
 def KeyPair(name: Algorithm.MAYO, *, publickey: bytes) -> MAYOPublicKey: ...
@@ -427,6 +437,8 @@ def KeyPair(
     secretkey: bytes,
     publickey: bytes
 ) -> tuple[MLDSASecretKey, MLDSAPublicKey]: ...
+@_typing.overload
+def KeyPair(name: Algorithm.MLDSA, *, seed: bytes) -> MLDSASecretKey: ...
 @_typing.overload
 def KeyPair(name: Algorithm.MLDSA, *, secretkey: bytes) -> MLDSASecretKey: ...
 @_typing.overload
@@ -444,6 +456,8 @@ def KeyPair(
     publickey: bytes
 ) -> tuple[SPHINCSSecretKey, SPHINCSPublicKey]: ...
 @_typing.overload
+def KeyPair(name: Algorithm.SPHINCS, *, seed: bytes) -> SPHINCSSecretKey: ...
+@_typing.overload
 def KeyPair(name: Algorithm.SPHINCS, *, secretkey: bytes) -> SPHINCSSecretKey: ...
 @_typing.overload
 def KeyPair(name: Algorithm.SPHINCS, *, publickey: bytes) -> SPHINCSPublicKey: ...
@@ -460,6 +474,8 @@ def KeyPair(
     publickey: bytes
 ) -> tuple[UOVSecretKey, UOVPublicKey]: ...
 @_typing.overload
+def KeyPair(name: Algorithm.UOV, *, seed: bytes) -> UOVSecretKey: ...
+@_typing.overload
 def KeyPair(name: Algorithm.UOV, *, secretkey: bytes) -> UOVSecretKey: ...
 @_typing.overload
 def KeyPair(name: Algorithm.UOV, *, publickey: bytes) -> UOVPublicKey: ...
@@ -473,11 +489,15 @@ def KeyPair(
         name: Algorithm | Algorithms,
         *,
         secretkey: bytes | None = None,
-        publickey: bytes | None = None
+        publickey: bytes | None = None,
+        seed: bytes | None = None
     ) -> tuple[SecretKey, PublicKey] | SecretKey | PublicKey:
     algorithm = name
     if isinstance(algorithm, Algorithm.CROSS):
-        if secretkey is not None and publickey is None:
+        if seed is not None:
+            secretkey, publickey = _internal.dsaseedkeygen(algorithm.value, seed)  # type: ignore
+            return CROSSSecretKey(algorithm, secretkey), CROSSPublicKey(algorithm, publickey) # type: ignore
+        elif secretkey is not None and publickey is None:
             return CROSSSecretKey(algorithm, secretkey)
         elif publickey is not None and secretkey is None:
             return CROSSPublicKey(algorithm, publickey)
@@ -487,7 +507,10 @@ def KeyPair(
             secretkey, publickey = _internal.dsakeygen(algorithm.value) # type: ignore
             return CROSSSecretKey(algorithm, secretkey), CROSSPublicKey(algorithm, publickey) # type: ignore
     elif isinstance(algorithm, Algorithm.DILITHIUM):
-        if secretkey is not None and publickey is None:
+        if seed is not None:
+            secretkey, publickey = _internal.dsaseedkeygen(algorithm.value, seed)  # type: ignore
+            return DILITHIUMSecretKey(algorithm, secretkey), DILITHIUMPublicKey(algorithm, publickey) # type: ignore
+        elif secretkey is not None and publickey is None:
             return DILITHIUMSecretKey(algorithm, secretkey)
         elif publickey is not None and secretkey is None:
             return DILITHIUMPublicKey(algorithm, publickey)
@@ -497,7 +520,10 @@ def KeyPair(
             secretkey, publickey = _internal.dsakeygen(algorithm.value) # type: ignore
             return DILITHIUMSecretKey(algorithm, secretkey), DILITHIUMPublicKey(algorithm, publickey) # type: ignore
     elif isinstance(algorithm, Algorithm.FALCON):
-        if secretkey is not None and publickey is None:
+        if seed is not None:
+            secretkey, publickey = _internal.dsaseedkeygen(algorithm.value, seed)  # type: ignore
+            return FALCONSecretKey(algorithm, secretkey), FALCONPublicKey(algorithm, publickey) # type: ignore
+        elif secretkey is not None and publickey is None:
             return FALCONSecretKey(algorithm, secretkey)
         elif publickey is not None and secretkey is None:
             return FALCONPublicKey(algorithm, publickey)
@@ -507,7 +533,10 @@ def KeyPair(
             secretkey, publickey = _internal.dsakeygen(algorithm.value) # type: ignore
             return FALCONSecretKey(algorithm, secretkey), FALCONPublicKey(algorithm, publickey) # type: ignore
     elif isinstance(algorithm, Algorithm.MAYO):
-        if secretkey is not None and publickey is None:
+        if seed is not None:
+            secretkey, publickey = _internal.dsaseedkeygen(algorithm.value, seed)  # type: ignore
+            return MAYOSecretKey(algorithm, secretkey), MAYOPublicKey(algorithm, publickey) # type: ignore
+        elif secretkey is not None and publickey is None:
             return MAYOSecretKey(algorithm, secretkey)
         elif publickey is not None and secretkey is None:
             return MAYOPublicKey(algorithm, publickey)
@@ -517,7 +546,10 @@ def KeyPair(
             secretkey, publickey = _internal.dsakeygen(algorithm.value) # type: ignore
             return MAYOSecretKey(algorithm, secretkey), MAYOPublicKey(algorithm, publickey) # type: ignore
     elif isinstance(algorithm, Algorithm.MLDSA):
-        if secretkey is not None and publickey is None:
+        if seed is not None:
+            secretkey, publickey = _internal.dsaseedkeygen(algorithm.value, seed)  # type: ignore
+            return MLDSASecretKey(algorithm, secretkey), MLDSAPublicKey(algorithm, publickey) # type: ignore
+        elif secretkey is not None and publickey is None:
             return MLDSASecretKey(algorithm, secretkey)
         elif publickey is not None and secretkey is None:
             return MLDSAPublicKey(algorithm, publickey)
@@ -527,7 +559,10 @@ def KeyPair(
             secretkey, publickey = _internal.dsakeygen(algorithm.value) # type: ignore
             return MLDSASecretKey(algorithm, secretkey), MLDSAPublicKey(algorithm, publickey) # type: ignore
     elif isinstance(algorithm, Algorithm.SPHINCS):
-        if secretkey is not None and publickey is None:
+        if seed is not None:
+            secretkey, publickey = _internal.dsaseedkeygen(algorithm.value, seed)  # type: ignore
+            return SPHINCSSecretKey(algorithm, secretkey), SPHINCSPublicKey(algorithm, publickey) # type: ignore
+        elif secretkey is not None and publickey is None:
             return SPHINCSSecretKey(algorithm, secretkey)
         elif publickey is not None and secretkey is None:
             return SPHINCSPublicKey(algorithm, publickey)
@@ -537,7 +572,10 @@ def KeyPair(
             secretkey, publickey = _internal.dsakeygen(algorithm.value) # type: ignore
             return SPHINCSSecretKey(algorithm, secretkey), SPHINCSPublicKey(algorithm, publickey) # type: ignore
     elif isinstance(algorithm, Algorithm.UOV):
-        if secretkey is not None and publickey is None:
+        if seed is not None:
+            secretkey, publickey = _internal.dsaseedkeygen(algorithm.value, seed)  # type: ignore
+            return UOVSecretKey(algorithm, secretkey), UOVPublicKey(algorithm, publickey) # type: ignore
+        elif secretkey is not None and publickey is None:
             return UOVSecretKey(algorithm, secretkey)
         elif publickey is not None and secretkey is None:
             return UOVPublicKey(algorithm, publickey)

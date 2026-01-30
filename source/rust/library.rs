@@ -14,6 +14,7 @@ fn __internal__(module: &Bound<PyModule>) -> PyResult<()> {
     module.add_function(wrap_pyfunction!(backend::classic::phf::internal::bcryptverify, module)?)?;
     //
     module.add_function(wrap_pyfunction!(backend::quantum::dsa::internal::dsakeygen, module)?)?;
+    module.add_function(wrap_pyfunction!(backend::quantum::dsa::internal::dsaseedkeygen, module)?)?;
     module.add_function(wrap_pyfunction!(backend::quantum::dsa::internal::dsasign, module)?)?;
     module.add_function(wrap_pyfunction!(backend::quantum::dsa::internal::dsaverify, module)?)?;
     //
