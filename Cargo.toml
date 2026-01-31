@@ -53,5 +53,8 @@ version = "0.10.8"
 version = "0.10.75"
 features = ["vendored"]
 
+[target.'cfg(windows)'.dependencies]
+winapi = "0.3.9"
+
 [profile.release]
 overflow-checks = true
