@@ -1,6 +1,6 @@
 [package]
 name = "kryptoon"
-version = "2026.1.31"
+version = "2026.2.1"
 edition = "2024"
 
 authors = ["Anonymous <me@pishvaveisi.com>"]
@@ -49,12 +49,12 @@ version = "0.5.1"
 [dependencies.sha3]
 version = "0.10.8"
 
+[dependencies.chacha20poly1305]
+version = "0.10.1"
+
 [dependencies.openssl]
 version = "0.10.75"
 features = ["vendored"]
-
-[target.'cfg(windows)'.dependencies]
-winapi = "0.3.9"
 
 [profile.release]
 overflow-checks = true

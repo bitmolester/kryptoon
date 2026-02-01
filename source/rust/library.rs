@@ -5,6 +5,11 @@ mod backend;
 // MAIN
 #[pymodule]
 fn __internal__(module: &Bound<PyModule>) -> PyResult<()> {
+    module.add_function(wrap_pyfunction!(backend::classic::cipher::internal::chencrypt, module)?)?;
+    module.add_function(wrap_pyfunction!(backend::classic::cipher::internal::chdecrypt, module)?)?;
+    module.add_function(wrap_pyfunction!(backend::classic::cipher::internal::xchencrypt, module)?)?;
+    module.add_function(wrap_pyfunction!(backend::classic::cipher::internal::xchdecrypt, module)?)?;
+    //
     module.add_function(wrap_pyfunction!(backend::classic::encode::internal::b58encode, module)?)?;
     module.add_function(wrap_pyfunction!(backend::classic::encode::internal::b58decode, module)?)?;
     //

@@ -1,8 +1,11 @@
 # dir
 liboqs/
 target/
-.venv/
 test/
+
+# hidden
+.venv/
+.cargo/
 
 # file
 Cargo.lock

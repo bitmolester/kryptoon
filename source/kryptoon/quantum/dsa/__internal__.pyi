@@ -229,6 +229,9 @@ def KeyPair(
 ) -> tuple[SecretKey, PublicKey]:
     ...
 @_typing.overload
+def KeyPair(name: Algorithm, *, seed: bytes) -> tuple[SecretKey, PublicKey]:
+    ...
+@_typing.overload
 def KeyPair(name: Algorithm, *, secretkey: bytes) -> SecretKey:
     ...
 @_typing.overload
@@ -247,6 +250,9 @@ def KeyPair(
     secretkey: bytes,
     publickey: bytes
 ) -> tuple[CROSSSecretKey, CROSSPublicKey]:
+    ...
+@_typing.overload
+def KeyPair(name: Algorithm.CROSS, *, seed: bytes) -> tuple[CROSSSecretKey, CROSSPublicKey]:
     ...
 @_typing.overload
 def KeyPair(name: Algorithm.CROSS, *, secretkey: bytes) -> CROSSSecretKey:
@@ -269,6 +275,9 @@ def KeyPair(
 ) -> tuple[DILITHIUMSecretKey, DILITHIUMPublicKey]:
     ...
 @_typing.overload
+def KeyPair(name: Algorithm.DILITHIUM, *, seed: bytes) -> tuple[DILITHIUMSecretKey, DILITHIUMPublicKey]:
+    ...
+@_typing.overload
 def KeyPair(name: Algorithm.DILITHIUM, *, secretkey: bytes) -> DILITHIUMSecretKey:
     ...
 @_typing.overload
@@ -287,6 +296,9 @@ def KeyPair(
     secretkey: bytes,
     publickey: bytes
 ) -> tuple[FALCONSecretKey, FALCONPublicKey]:
+    ...
+@_typing.overload
+def KeyPair(name: Algorithm.FALCON, *, seed: bytes) -> tuple[FALCONSecretKey, FALCONPublicKey]:
     ...
 @_typing.overload
 def KeyPair(name: Algorithm.FALCON, *, secretkey: bytes) -> FALCONSecretKey:
@@ -309,6 +321,9 @@ def KeyPair(
 ) -> tuple[MAYOSecretKey, MAYOPublicKey]:
     ...
 @_typing.overload
+def KeyPair(name: Algorithm.MAYO, *, seed: bytes) -> tuple[MAYOSecretKey, MAYOPublicKey]:
+    ...
+@_typing.overload
 def KeyPair(name: Algorithm.MAYO, *, secretkey: bytes) -> MAYOSecretKey:
     ...
 @_typing.overload
@@ -327,6 +342,9 @@ def KeyPair(
     secretkey: bytes,
     publickey: bytes
 ) -> tuple[MLDSASecretKey, MLDSAPublicKey]:
+    ...
+@_typing.overload
+def KeyPair(name: Algorithm.MLDSA, *, seed: bytes) -> tuple[MLDSASecretKey, MLDSAPublicKey]:
     ...
 @_typing.overload
 def KeyPair(name: Algorithm.MLDSA, *, secretkey: bytes) -> MLDSASecretKey:
@@ -349,6 +367,9 @@ def KeyPair(
 ) -> tuple[SPHINCSSecretKey, SPHINCSPublicKey]:
     ...
 @_typing.overload
+def KeyPair(name: Algorithm.SPHINCS, *, seed: bytes) -> tuple[SPHINCSSecretKey, SPHINCSPublicKey]:
+    ...
+@_typing.overload
 def KeyPair(name: Algorithm.SPHINCS, *, secretkey: bytes) -> SPHINCSSecretKey:
     ...
 @_typing.overload
@@ -369,6 +390,9 @@ def KeyPair(
 ) -> tuple[UOVSecretKey, UOVPublicKey]:
     ...
 @_typing.overload
+def KeyPair(name: Algorithm.UOV, *, seed: bytes) -> tuple[UOVSecretKey, UOVPublicKey]:
+    ...
+@_typing.overload
 def KeyPair(name: Algorithm.UOV, *, secretkey: bytes) -> UOVSecretKey:
     ...
 @_typing.overload
@@ -385,6 +409,7 @@ def KeyPair(
         name: Algorithm | Algorithms,
         *,
         secretkey: bytes | None = ...,
-        publickey: bytes | None = ...
+        publickey: bytes | None = ...,
+        seed: bytes | None = ...
     ) -> tuple[SecretKey, PublicKey] | SecretKey | PublicKey:
     ...
