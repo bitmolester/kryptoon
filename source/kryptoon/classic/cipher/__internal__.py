@@ -19,6 +19,7 @@ class ChaCha20Poly1305:
     #
     def decrypt(self, buffer: bytes, *, nonce: bytes | None = None) -> bytes:
         nonce = nonce if nonce else buffer[:12]
+        buffer = buffer if nonce else buffer[12:]
         cleartext = _internal.chdecrypt(self.secretkey, nonce, buffer) #type: ignore
         return cleartext #type: ignore
     #
@@ -34,6 +35,7 @@ class ChaCha20Poly1305:
     @staticmethod
     def staticdecrypt(secretkey: bytes, buffer: bytes, *, nonce: bytes | None = None, append: bool = True) -> bytes:
         nonce = nonce if nonce else buffer[:12]
+        buffer = buffer if nonce else buffer[12:]
         cleartext = _internal.chdecrypt(self.secretkey, nonce, buffer) #type: ignore
         return cleartext #type: ignore
 
@@ -53,6 +55,7 @@ class XChaCha20Poly1305:
     #
     def decrypt(self, buffer: bytes, *, nonce: bytes | None = None) -> bytes:
         nonce = nonce if nonce else buffer[:24]
+        buffer = buffer if nonce else buffer[24:]
         cleartext = _internal.xchdecrypt(self.secretkey, nonce, buffer) #type: ignore
         return cleartext #type: ignore
     #
@@ -68,5 +71,6 @@ class XChaCha20Poly1305:
     @staticmethod
     def staticdecrypt(secretkey: bytes, buffer: bytes, *, nonce: bytes | None = None, append: bool = True) -> bytes:
         nonce = nonce if nonce else buffer[:24]
+        buffer = buffer if nonce else buffer[24:]
         cleartext = _internal.xchdecrypt(self.secretkey, nonce, buffer) #type: ignore
         return cleartext #type: ignore

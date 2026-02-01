@@ -15,6 +15,9 @@ Supports an extensive set of **post-quantum** digital signature algorithms (DSA)
 ### 🧬 Supported Algorithms
 
 ## 💻 Classic
+### Cipher
+- #### ChaCha20Poly1305
+- #### XChaCha20Poly1305
 ### Encoding
 - #### Base58
 ### Hashing

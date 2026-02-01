@@ -1,3 +1,4 @@
+// MAIN
 fn main() {
     #[cfg(windows)]
     {

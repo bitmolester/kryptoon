@@ -1,6 +1,6 @@
 [package]
 name = "kryptoon"
-version = "2026.2.1"
+version = "2026.2.2"
 edition = "2024"
 
 authors = ["Anonymous <me@pishvaveisi.com>"]
@@ -19,7 +19,7 @@ crate-type = ["cdylib"]
 path = "source/rust/library.rs"
 
 [dependencies.pyo3]
-version = "0.27.2"
+version = "0.28.0"
 features = ["extension-module"]
 
 [dependencies.oqs]
